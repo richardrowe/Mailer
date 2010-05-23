@@ -104,15 +104,13 @@ class Mailer {
 			break;
 			
 			case 'sendmail':
-				/*
-					TODO Finish
-				*/
+				// Create sendmail transport
+				$transport = Swift_SendmailTransport::newInstance(empty($options) ? "/usr/sbin/sendmail -bs" : $options);
 			break;
 			
 			default:
-				/*
-					TODO Finish
-				*/
+				// Create native transport
+				$transport = Swift_MailTransport::newInstance();
 			break;
 		}
 
