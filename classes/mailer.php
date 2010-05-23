@@ -32,7 +32,6 @@ class Mailer {
 	
 	protected $result						= NULL;
 	
-	
 	public function __construct()
 	{		
 		$this->_class_name = get_class($this);
@@ -40,7 +39,6 @@ class Mailer {
 		//setup SwiftMailer 
 		$this->connect();
 	}
-	
 	
 	/**
 	 * factory
@@ -50,7 +48,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public static function factory($mailer_name) 
 	{
 		$class = 'Mailer_'.ucfirst($mailer_name);
@@ -66,18 +63,20 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function connect($config = NULL) 
 	{
 		if ( ! class_exists('Swift', FALSE))
 		{
 			// Load SwiftMailer Autoloader
-			require_once Kohana::find_file('vendor', 'swift/swift_required');
+			require_once Kohana::find_file('vendor', 'swiftmailer/lib/swift_required');
 		}
 
-		// Load default configuration
-		($config === NULL) and $config = Kohana::config('mailer');
-		
+		if ($config === NULL)
+		{
+			// Load default configuration
+			$config = Kohana::config('mailer');
+		}
+
 		//get the configuration options
 		$options = $config->options;
 		
@@ -85,19 +84,20 @@ class Mailer {
 		{
 			case 'smtp':
 				
-				//Create the Transport
+				// Create SMTP transport
 				$transport = Swift_SmtpTransport::newInstance()
 								->setHost($options['hostname'])
 								->setUsername($options['username'])
 								->setPassword($options['password']);
 				
-				//Port?
+				// Set port
 				$port = empty($options['port']) ? NULL : (int) $options['port'];
 				$transport->setPort($port);
 				
-				//Use encryption?
-				if (! empty($options['encryption']))
+				// Use encryption?
+				if ( ! empty($options['encryption']))
 				{
+					// Set encryption
 					$transport->setEncryption($options['encryption']);
 				}
 				
@@ -114,10 +114,9 @@ class Mailer {
 			break;
 		}
 
-		//Create the Mailer using the appropriate transport
+		// Create the Mailer using the appropriate transport
 		return $this->_mailer = Swift_Mailer::newInstance($transport);
 	}
-	
 	
 	/**
 	 * __call
@@ -127,7 +126,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function __call($name, $args = array()) 
 	{
 		//catch all the send_ requests
@@ -156,7 +154,6 @@ class Mailer {
 		}		
 	}
 	
-	
 	/**
 	 * setup
 	 *
@@ -165,7 +162,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function setup_message($method) 
 	{
 		// Create the message
@@ -260,7 +256,6 @@ class Mailer {
 		
 	}
 	
-	
 	/**
 	 * send
 	 *
@@ -269,7 +264,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function send() 
 	{	
 		//should we batch send or not?
@@ -285,23 +279,18 @@ class Mailer {
 		
 		return $this->result;
 	}
-	
-	
-	
-	/**
-	 * get_class
+
+	/*
 	 *
 	 * @access public
 	 * @param  void	
 	 * @return void
 	 * 
 	 **/
-	
 	public function get_class_name() 
 	{
 		return $this->_class_name;
 	}
-	
 	
 	/**
 	 * get_mailer
@@ -311,7 +300,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function get_mailer() 
 	{
 		return $this->_mailer;
@@ -326,7 +314,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function set_mailer($mailer) 
 	{
 		if ($mailer instanceof Swift_Mailer)
@@ -334,7 +321,6 @@ class Mailer {
 			$this->_mailer = $mailer;
 		}
 	}
-	
 	
 	/**
 	 * get_message
@@ -344,7 +330,6 @@ class Mailer {
 	 * @return void
 	 * 
 	 **/
-	
 	public function get_message() 
 	{
 		if ($this->message !== NULL)
@@ -352,10 +337,4 @@ class Mailer {
 			return $this->message;
 		}
 	}
-	
-		
-	
-	
-}// end of Mailer
-
-?>
+} // End Mailer
