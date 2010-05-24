@@ -6,7 +6,7 @@ class Mailer {
 		
 	protected $_mailer 						= NULL;
 	
-	protected $message_type					= 'text/html';
+	protected $content_type					= 'text/html';
 	
 	protected $from							= NULL;
 	
@@ -171,7 +171,7 @@ class Mailer {
 		$this->message->setSubject($this->subject);
 		
 		//do we need to process the HTML?
-		if ($this->message_type == 'text/html' OR $this->message_type == 'multipart/alternative')
+		if ($this->content_type == 'text/html' OR $this->content_type == 'multipart/alternative')
 		{
 			//has it already been set?
 			if ($this->body_html === NULL)
